@@ -3,7 +3,7 @@
 > **PromptWars Virtual · Challenge 5 — Celebration & Event Planner**
 > A GenAI-powered planning assistant that helps people organise **weddings, birthdays, anniversaries, baby showers and community events** with **budgets, timelines, vendor checklists and personalised ideas** — powered by **Google Gemini**.
 
-**Live demo:** _add your Cloud Run URL here_
+**Live demo:** https://utsav-event-planner.vercel.app
 
 ---
 
@@ -68,7 +68,7 @@ Express 5 (helmet CSP, rate limit, 16 KB JSON limit, compression)
   - *Personalised ideas:* structured output with `responseMimeType: application/json` + `responseSchema` (`POST /api/ideas`).
   - *Planning assistant:* multi-turn chat grounded in the plan via `systemInstruction` (`POST /api/chat`).
   - Works with a Gemini API key **or** Vertex AI (`GOOGLE_GENAI_USE_VERTEXAI=true`) on Google Cloud.
-- **Google Cloud Run** for deployment (Dockerfile included), with the API key stored in **Secret Manager**.
+- **Deployment:** live on Vercel (serverless function for `/api`, CDN for static files, key stored as an encrypted environment variable). A Dockerfile and commands for **Google Cloud Run** + **Secret Manager** are included as an alternative.
 
 ## 5. Evaluation focus areas
 
@@ -106,7 +106,17 @@ npm run dev               # http://localhost:8080
 
 Without a key the app runs in "smart planner" mode (deterministic plan + built-in ideas).
 
-## 7. Deploy to Google Cloud Run
+## 7. Deploy
+
+**Vercel (current live deployment)** — `api/index.js` wraps the same Express app; `vercel.json` serves `public/` from the CDN with the same security headers.
+
+```bash
+vercel link
+vercel env add GEMINI_API_KEY production --sensitive
+vercel deploy --prod
+```
+
+**Google Cloud Run (alternative)**
 
 ```bash
 gcloud services enable run.googleapis.com cloudbuild.googleapis.com secretmanager.googleapis.com
@@ -131,6 +141,8 @@ gcloud run deploy utsav-event-planner \
 
 ```
 server.js                 # entry point, graceful shutdown
+api/index.js              # Vercel serverless entry (same Express app)
+vercel.json               # Vercel routing, CDN headers
 src/
   app.js                  # Express app factory (security, rate limit, static)
   config.js               # env-based config

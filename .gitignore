@@ -6,3 +6,5 @@ coverage/
 .claude/
 .DS_Store
 *.log
+.vercel
+.env*
