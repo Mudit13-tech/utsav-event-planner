@@ -19,7 +19,6 @@ export function loadConfig(env = process.env) {
 
   return Object.freeze({
     port: toInt(env.PORT, 8080),
-    nodeEnv: env.NODE_ENV ?? 'development',
     gemini: Object.freeze({
       apiKey: env.GEMINI_API_KEY ?? '',
       model: env.GEMINI_MODEL || 'gemini-3.5-flash-lite',

@@ -55,13 +55,12 @@ export function createApp({ config, ai, now, logger = console }) {
   app.use('/api', apiLimiter, express.json({ limit: '16kb' }), createApiRouter({ ai, now }));
   app.use('/api', notFound);
 
+  // Assets are unversioned ES modules, so browsers revalidate them (cheap 304s via ETag)
+  // instead of caching blindly; otherwise a deploy could mix new HTML with stale scripts.
   app.use(
     express.static(PUBLIC_DIR, {
       etag: true,
-      maxAge: config.nodeEnv === 'production' ? '1h' : 0,
-      setHeaders: (res, filePath) => {
-        if (filePath.endsWith('.html')) res.setHeader('Cache-Control', 'no-cache');
-      },
+      setHeaders: (res) => res.setHeader('Cache-Control', 'no-cache'),
     }),
   );
 

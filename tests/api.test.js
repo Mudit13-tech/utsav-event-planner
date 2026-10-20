@@ -101,6 +101,9 @@ describe('API (AI offline)', () => {
   it('compresses responses', async () => {
     const res = await fetch(`${ctx.base}/css/styles.css`, { headers: { 'Accept-Encoding': 'gzip' } });
     assert.equal(res.headers.get('content-encoding'), 'gzip');
+    // Unversioned assets must revalidate so a deploy never mixes new HTML with stale JS.
+    assert.equal(res.headers.get('cache-control'), 'no-cache');
+    assert.ok(res.headers.get('etag'));
   });
 });
 
