@@ -1,0 +1,9 @@
+node_modules
+coverage
+tests
+.git
+.env
+.env.*
+.claude
+*.md
+eslint.config.js

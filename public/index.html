@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="description" content="Utsav is a GenAI celebration and event planner: budgets, timelines, vendor checklists and personalised ideas for weddings, birthdays and community events, powered by Google Gemini." />
+    <title>Utsav | AI Celebration &amp; Event Planner</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/css/styles.css" />
+    <script type="module" src="/js/app.js"></script>
+  </head>
+  <body>
+    <a href="#content" class="skip-link visually-hidden">Skip to main content</a>
+
+    <header class="site-header">
+      <div class="container header-inner">
+        <p class="brand"><span class="brand-mark" aria-hidden="true">✦</span> Utsav</p>
+        <p class="tagline">Your AI planner for weddings, birthdays &amp; community celebrations</p>
+        <p id="ai-status" class="badge badge-muted">Checking AI…</p>
+      </div>
+    </header>
+
+    <main id="content" tabindex="-1" class="container">
+      <section id="planner" aria-labelledby="planner-title" class="card">
+        <h1 id="planner-title">Plan your celebration</h1>
+        <p class="lead">Tell us about your event. Utsav builds a budget split, a dated timeline and a vendor checklist, then Gemini adds personalised ideas.</p>
+
+        <form id="event-form" method="post" action="/api/plan" novalidate>
+          <fieldset>
+            <legend>1. The occasion</legend>
+            <div class="radio-grid">
+              <label class="radio-card"><input type="radio" name="eventType" value="wedding" required checked /> <span>💍 Wedding</span></label>
+              <label class="radio-card"><input type="radio" name="eventType" value="birthday" /> <span>🎂 Birthday</span></label>
+              <label class="radio-card"><input type="radio" name="eventType" value="anniversary" /> <span>💞 Anniversary</span></label>
+              <label class="radio-card"><input type="radio" name="eventType" value="baby_shower" /> <span>🍼 Baby shower</span></label>
+              <label class="radio-card"><input type="radio" name="eventType" value="community" /> <span>🎪 Community event</span></label>
+            </div>
+            <p id="eventType-error" class="error-msg" hidden>Choose an event type.</p>
+
+            <div class="grid-2">
+              <div class="field">
+                <label for="eventName">Event name <span class="optional">(optional)</span></label>
+                <input id="eventName" name="eventName" type="text" maxlength="80" autocomplete="off" />
+              </div>
+              <div class="field">
+                <label for="eventDate">Event date <span class="req" aria-hidden="true">*</span></label>
+                <input id="eventDate" name="eventDate" type="date" required aria-describedby="eventDate-error" />
+                <p id="eventDate-error" class="error-msg">Pick today or a future date.</p>
+              </div>
+              <div class="field">
+                <label for="city">City <span class="optional">(optional)</span></label>
+                <input id="city" name="city" type="text" maxlength="60" autocomplete="address-level2" />
+              </div>
+              <div class="field">
+                <label for="venueType">Venue type</label>
+                <select id="venueType" name="venueType">
+                  <option value="undecided">Not decided yet</option>
+                  <option value="home">Home / own space</option>
+                  <option value="banquet">Banquet hall / hotel</option>
+                  <option value="outdoor">Outdoor / lawn</option>
+                  <option value="restaurant">Restaurant / café</option>
+                  <option value="community">Community hall / ground</option>
+                </select>
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>2. Guests &amp; budget</legend>
+            <div class="grid-3">
+              <div class="field">
+                <label for="guestCount">Number of guests <span class="req" aria-hidden="true">*</span></label>
+                <input id="guestCount" name="guestCount" type="number" inputmode="numeric" min="1" max="5000" step="1" required aria-describedby="guestCount-error" />
+                <p id="guestCount-error" class="error-msg">Enter between 1 and 5000 guests.</p>
+              </div>
+              <div class="field">
+                <label for="budget">Total budget <span class="req" aria-hidden="true">*</span></label>
+                <input id="budget" name="budget" type="number" inputmode="numeric" min="1" step="1" required aria-describedby="budget-error" />
+                <p id="budget-error" class="error-msg">Enter a positive budget.</p>
+              </div>
+              <div class="field">
+                <label for="currency">Currency</label>
+                <select id="currency" name="currency">
+                  <option value="INR">INR ₹</option>
+                  <option value="USD">USD $</option>
+                  <option value="EUR">EUR €</option>
+                  <option value="GBP">GBP £</option>
+                  <option value="AED">AED</option>
+                </select>
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>3. Style &amp; priorities</legend>
+            <div class="field">
+              <label for="theme">Theme or vibe <span class="optional">(optional)</span></label>
+              <input id="theme" name="theme" type="text" maxlength="100" placeholder="e.g. pastel garden, Bollywood retro, eco-friendly" />
+            </div>
+            <fieldset class="nested" aria-describedby="priorities-hint priorities-error">
+              <legend>What matters most? <span class="optional">(up to 3)</span></legend>
+              <p id="priorities-hint" class="hint">Priorities get a bigger share of the budget.</p>
+              <div class="chip-grid">
+                <label class="chip"><input type="checkbox" name="priorities" value="catering" /> Food</label>
+                <label class="chip"><input type="checkbox" name="priorities" value="decor" /> Decor</label>
+                <label class="chip"><input type="checkbox" name="priorities" value="photography" /> Photo &amp; video</label>
+                <label class="chip"><input type="checkbox" name="priorities" value="entertainment" /> Entertainment</label>
+                <label class="chip"><input type="checkbox" name="priorities" value="venue" /> Venue</label>
+                <label class="chip"><input type="checkbox" name="priorities" value="attire" /> Attire</label>
+              </div>
+              <p id="priorities-error" class="error-msg" hidden>Choose at most 3 priorities.</p>
+            </fieldset>
+          </fieldset>
+
+          <fieldset>
+            <legend>4. Guest needs <span class="optional">(optional)</span></legend>
+            <div class="grid-2">
+              <div class="field">
+                <label for="dietary">Dietary needs</label>
+                <input id="dietary" name="dietary" type="text" maxlength="200" placeholder="e.g. Jain, vegan, nut allergy" />
+              </div>
+              <div class="field">
+                <label for="accessibility">Accessibility needs</label>
+                <input id="accessibility" name="accessibility" type="text" maxlength="200" placeholder="e.g. wheelchair access, elderly guests" />
+              </div>
+            </div>
+            <div class="field">
+              <label for="notes">Anything else?</label>
+              <textarea id="notes" name="notes" rows="3" maxlength="500" placeholder="Traditions, must-haves, things to avoid…"></textarea>
+            </div>
+          </fieldset>
+
+          <div class="actions">
+            <button type="submit" id="submit-btn" class="btn btn-primary">Create my plan</button>
+            <button type="button" id="sample-btn" class="btn btn-ghost">Fill a sample wedding</button>
+          </div>
+        </form>
+      </section>
+
+      <section id="results" aria-labelledby="results-title" hidden>
+        <div class="card summary" id="summary">
+          <h2 id="results-title" tabindex="-1"></h2>
+          <p id="summary-headline" class="lead"></p>
+          <dl id="summary-stats" class="stats"></dl>
+          <div class="actions no-print">
+            <button type="button" id="ics-btn" class="btn btn-ghost">Add timeline to calendar (.ics)</button>
+            <button type="button" id="print-btn" class="btn btn-ghost">Print / save as PDF</button>
+            <button type="button" id="edit-btn" class="btn btn-ghost">Edit event details</button>
+          </div>
+        </div>
+
+        <div class="tabs no-print" role="tablist" aria-label="Plan sections">
+          <button type="button" role="tab" id="tab-ideas" aria-controls="panel-ideas" aria-selected="true">Ideas</button>
+          <button type="button" role="tab" id="tab-budget" aria-controls="panel-budget" aria-selected="false" tabindex="-1">Budget</button>
+          <button type="button" role="tab" id="tab-timeline" aria-controls="panel-timeline" aria-selected="false" tabindex="-1">Timeline</button>
+          <button type="button" role="tab" id="tab-vendors" aria-controls="panel-vendors" aria-selected="false" tabindex="-1">Vendors</button>
+          <button type="button" role="tab" id="tab-assistant" aria-controls="panel-assistant" aria-selected="false" tabindex="-1">Ask Utsav</button>
+        </div>
+
+        <div id="panel-ideas" role="tabpanel" aria-labelledby="tab-ideas" class="card panel" tabindex="0"></div>
+        <div id="panel-budget" role="tabpanel" aria-labelledby="tab-budget" class="card panel" tabindex="0" hidden></div>
+        <div id="panel-timeline" role="tabpanel" aria-labelledby="tab-timeline" class="card panel" tabindex="0" hidden></div>
+        <div id="panel-vendors" role="tabpanel" aria-labelledby="tab-vendors" class="card panel" tabindex="0" hidden></div>
+        <div id="panel-assistant" role="tabpanel" aria-labelledby="tab-assistant" class="card panel" tabindex="0" hidden>
+          <h3>Ask Utsav</h3>
+          <p class="hint">Ask follow-up questions about your plan — the assistant knows your budget, dates and vendors.</p>
+          <div class="chip-grid" id="suggestions">
+            <button type="button" class="chip chip-btn">How can I cut costs by 20%?</button>
+            <button type="button" class="chip chip-btn">Which vendors should I book first?</button>
+            <button type="button" class="chip chip-btn">Suggest a running order for the day</button>
+            <button type="button" class="chip chip-btn">Ideas to keep elderly guests comfortable</button>
+          </div>
+          <ol id="chat-log" class="chat-log" role="log" aria-live="polite" aria-label="Conversation with Utsav"></ol>
+          <form id="chat-form" class="chat-form">
+            <label for="chat-input" class="visually-hidden">Your question</label>
+            <textarea id="chat-input" name="message" rows="2" maxlength="500" required placeholder="Ask anything about your event…"></textarea>
+            <button type="submit" class="btn btn-primary" id="chat-send">Send</button>
+          </form>
+        </div>
+      </section>
+
+      <p id="announcer" class="visually-hidden" aria-live="polite"></p>
+      <div id="error-banner" class="banner banner-error" role="alert" hidden></div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p>Built for PromptWars Virtual — Celebration &amp; Event Planner. Powered by Google Gemini. Your plan is saved only in this browser.</p>
+      </div>
+    </footer>
+  </body>
+</html>
