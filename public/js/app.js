@@ -6,7 +6,7 @@ import { askAssistant, createPlan, getHealth, getIdeas } from './api.js';
 import { renderBudget, renderChat, renderIdeas, renderSummary, renderTimeline, renderVendors } from './render.js';
 import { loadState, saveState } from './storage.js';
 import { initTabs } from './tabs.js';
-import { buildIcs, formToPayload, todayIso } from './utils.js';
+import { buildIcs, formToPayload, formatDate, formatMoney, todayIso } from './utils.js';
 
 const $ = (selector) => document.querySelector(selector);
 const MAX_PRIORITIES = 3;
@@ -56,6 +56,39 @@ form.addEventListener('change', (event) => {
   }
 });
 
+/* ---------- Live preview ---------- */
+
+const PRIORITY_LABELS = Object.freeze({
+  catering: 'Food',
+  decor: 'Decor',
+  photography: 'Photo',
+  entertainment: 'Entertainment',
+  venue: 'Venue',
+  attire: 'Attire',
+});
+
+/** Mirrors the form into the preview card as the user types (no network). */
+function updatePreview() {
+  const input = formToPayload(new FormData(form));
+  const typeLabel = form.querySelector('input[name="eventType"]:checked')?.closest('label').textContent.trim();
+  const setText = (id, text) => ($(`#${id}`).textContent = text);
+
+  setText('pv-type', typeLabel || '—');
+  if (input.eventDate && input.eventDate >= todayIso()) {
+    const days = Math.round((new Date(`${input.eventDate}T00:00:00Z`) - new Date(`${todayIso()}T00:00:00Z`)) / 86_400_000);
+    setText('pv-date', `${formatDate(input.eventDate)} · ${days} days`);
+  } else {
+    setText('pv-date', 'Not set');
+  }
+  const guestsOk = Number.isInteger(input.guestCount) && input.guestCount > 0;
+  setText('pv-guests', guestsOk ? String(input.guestCount) : '—');
+  setText('pv-per-guest', guestsOk && input.budget > 0 ? formatMoney(Math.round(input.budget / input.guestCount), input.currency) : '—');
+  setText('pv-priorities', input.priorities.map((p) => PRIORITY_LABELS[p]).join(', ') || 'None yet');
+}
+
+form.addEventListener('input', updatePreview);
+form.addEventListener('change', updatePreview);
+
 function fillForm(input) {
   for (const [key, value] of Object.entries(input)) {
     if (key === 'priorities') {
@@ -67,6 +100,7 @@ function fillForm(input) {
       form.elements[key].value = value ?? '';
     }
   }
+  updatePreview();
 }
 
 /* ---------- Plan rendering & persistence ---------- */
@@ -113,6 +147,7 @@ function renderPlan(plan, { focus = true } = {}) {
   renderChat($('#chat-log'), state.chat);
 
   results.hidden = false;
+  $('#nav-results').hidden = false;
   tabs.select('tab-ideas', { focus: false });
   if (focus) {
     $('#results-title').focus();
@@ -125,15 +160,17 @@ form.addEventListener('submit', async (event) => {
   showError('');
   if (!form.checkValidity()) {
     for (const field of form.elements) syncAriaInvalid(field);
-    form.querySelector(':invalid')?.focus();
+    // Fieldsets also match :invalid, so target the first invalid control itself.
+    form.querySelector('input:invalid, select:invalid, textarea:invalid')?.focus();
     announce('Please fix the highlighted fields.');
     return;
   }
 
   const input = formToPayload(new FormData(form));
   const button = $('#submit-btn');
+  const buttonLabel = button.querySelector('.btn-label');
   button.disabled = true;
-  button.textContent = 'Planning with Gemini…';
+  buttonLabel.textContent = 'Building your plan…';
   form.setAttribute('aria-busy', 'true');
 
   try {
@@ -148,7 +185,7 @@ form.addEventListener('submit', async (event) => {
     showError(error.message);
   } finally {
     button.disabled = false;
-    button.textContent = 'Create my plan';
+    buttonLabel.textContent = 'Create my plan';
     form.removeAttribute('aria-busy');
   }
 });
@@ -171,8 +208,8 @@ $('#sample-btn').addEventListener('click', () => {
     accessibility: 'Several elderly grandparents, one wheelchair user',
     notes: 'Mehendi, sangeet and wedding on consecutive days',
   });
-  announce('Sample wedding details filled in.');
-  $('#submit-btn').focus();
+  announce('Sample wedding details filled in. Creating the plan.');
+  form.requestSubmit();
 });
 
 $('#edit-btn').addEventListener('click', () => {
@@ -204,8 +241,9 @@ async function sendChat(message) {
   renderChat($('#chat-log'), state.chat);
   chatInput.value = '';
   const send = $('#chat-send');
+  const typing = $('#chat-typing');
   send.disabled = true;
-  send.textContent = 'Thinking…';
+  typing.hidden = false;
 
   try {
     const { reply } = await askAssistant(state.input, message, history);
@@ -214,7 +252,7 @@ async function sendChat(message) {
     state.chat.push({ role: 'model', text: `Sorry — ${error.message}` });
   } finally {
     send.disabled = false;
-    send.textContent = 'Send';
+    typing.hidden = true;
     persist();
     renderChat($('#chat-log'), state.chat);
   }
@@ -235,22 +273,25 @@ chatInput.addEventListener('keydown', (event) => {
 
 $('#suggestions').addEventListener('click', (event) => {
   const chip = event.target.closest('button');
-  if (chip) sendChat(chip.textContent.trim());
+  if (chip && !$('#chat-send').disabled) sendChat(chip.textContent.trim());
 });
 
 /* ---------- Boot ---------- */
 
 form.elements.eventDate.min = todayIso();
 
+const setStatus = (text, variant) => {
+  const pill = $('#ai-status');
+  pill.querySelector('.status-text').textContent = text;
+  pill.classList.toggle('is-live', variant === 'live');
+  pill.classList.toggle('is-offline', variant === 'offline');
+};
+
 getHealth()
-  .then(({ ai }) => {
-    const status = $('#ai-status');
-    status.textContent = ai === 'gemini' ? 'Gemini AI: live' : 'AI offline — smart planner mode';
-    status.className = `badge ${ai === 'gemini' ? 'badge-ok' : 'badge-warn'}`;
-  })
-  .catch(() => {
-    $('#ai-status').textContent = 'Server unreachable';
-  });
+  .then(({ ai }) => (ai === 'gemini' ? setStatus('Gemini live', 'live') : setStatus('Smart planner mode', 'offline')))
+  .catch(() => setStatus('Server unreachable', 'offline'));
+
+updatePreview();
 
 if (state.input && state.plan) {
   fillForm(state.input);

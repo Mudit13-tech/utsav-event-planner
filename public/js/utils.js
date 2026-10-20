@@ -55,6 +55,48 @@ export function formToPayload(formData) {
   };
 }
 
+/**
+ * Folds budget lines into at most `max` named chart segments plus a neutral
+ * "Other" segment, each with a fixed colour slot (s-1…s-max, s-other).
+ */
+export function chartSegments(lines, max = 5) {
+  const sorted = [...lines].sort((a, b) => b.amount - a.amount);
+  const total = sorted.reduce((sum, line) => sum + line.amount, 0) || 1;
+  const toShare = (amount) => Math.round((amount / total) * 1000) / 10;
+
+  const segments = sorted.slice(0, max).map((line, index) => ({
+    label: line.label,
+    amount: line.amount,
+    share: toShare(line.amount),
+    slot: `s-${index + 1}`,
+    categories: [line.category],
+  }));
+
+  const rest = sorted.slice(max);
+  if (rest.length) {
+    const amount = rest.reduce((sum, line) => sum + line.amount, 0);
+    segments.push({
+      label: rest.length === 1 ? rest[0].label : `Other (${rest.length})`,
+      amount,
+      share: toShare(amount),
+      slot: 's-other',
+      categories: rest.map((line) => line.category),
+    });
+  }
+  return segments;
+}
+
+/** Groups timeline items by consecutive phase, preserving order. */
+export function groupByPhase(items) {
+  const groups = [];
+  for (const item of items) {
+    const last = groups.at(-1);
+    if (last && last.phase === item.phase) last.items.push(item);
+    else groups.push({ phase: item.phase, items: [item] });
+  }
+  return groups;
+}
+
 /** Escapes text for an iCalendar TEXT value (RFC 5545 §3.3.11). */
 export function icsEscape(value) {
   return String(value).replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n');

@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#2a0f24" />
     <meta name="description" content="Utsav is a GenAI celebration and event planner: budgets, timelines, vendor checklists and personalised ideas for weddings, birthdays and community events, powered by Google Gemini." />
     <title>Utsav | AI Celebration &amp; Event Planner</title>
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
@@ -11,181 +12,308 @@
     <script type="module" src="/js/app.js"></script>
   </head>
   <body>
+    <!-- Icon sprite: decorative strokes referenced with <use>. -->
+    <svg class="sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z" /><path d="M19 3v3M17.5 4.5h3" /></symbol>
+        <symbol id="i-rings" viewBox="0 0 24 24"><circle cx="9" cy="14.5" r="5" /><circle cx="15" cy="14.5" r="5" /><path d="M10 5h4l1.2 1.8L12 9.5 8.8 6.8z" /></symbol>
+        <symbol id="i-cake" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2" /><path d="M4 15.5c2.7 1.6 5.3 1.6 8 0s5.3-1.6 8 0M12 11V7.5" /><path d="M12 3.5c.9 1 1.1 2 0 3.2-1.1-1.2-.9-2.2 0-3.2z" /></symbol>
+        <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7.5-4.6-7.5-10.2A4.2 4.2 0 0 1 12 7.3a4.2 4.2 0 0 1 7.5 2.5C19.5 15.4 12 20 12 20z" /></symbol>
+        <symbol id="i-rattle" viewBox="0 0 24 24"><circle cx="9" cy="9" r="5.5" /><path d="M13 13l5.5 5.5" /><circle cx="19.5" cy="19.5" r="1.5" /><path d="M6.5 9h5M9 6.5v5" /></symbol>
+        <symbol id="i-people" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2" /><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6" /><circle cx="17" cy="9" r="2.5" /><path d="M15.8 14.3c2.9.3 5.2 2.7 5.2 5.7" /></symbol>
+        <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5" /><path d="M3.5 10h17M8 3v4M16 3v4" /></symbol>
+        <symbol id="i-wallet" viewBox="0 0 24 24"><path d="M4 7.5A2.5 2.5 0 0 1 6.5 5H18v3" /><rect x="4" y="8" width="16.5" height="12" rx="2.5" /><path d="M16 14h1.5" /></symbol>
+        <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" /><path d="M12 7.5V12l3 2" /></symbol>
+        <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" /></symbol>
+        <symbol id="i-chat" viewBox="0 0 24 24"><path d="M5 18.5l-2 2.5V6.5A2.5 2.5 0 0 1 5.5 4h13A2.5 2.5 0 0 1 21 6.5v9.5a2.5 2.5 0 0 1-2.5 2.5z" /><path d="M8 10h8M8 13.5h5" /></symbol>
+        <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11M7 10.5l5 5 5-5M5 20h14" /></symbol>
+        <symbol id="i-print" viewBox="0 0 24 24"><path d="M7 9V3.5h10V9" /><rect x="3" y="9" width="18" height="8" rx="2" /><rect x="7" y="14" width="10" height="7" rx="1" /></symbol>
+        <symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z" /><path d="M13.5 6.5l4 4" /></symbol>
+        <symbol id="i-store" viewBox="0 0 24 24"><path d="M4.5 10.5V20h15v-9.5" /><path d="M3 10.5L5 4h14l2 6.5a2.5 2.5 0 0 1-4.5 1.5 2.5 2.5 0 0 1-4.5 0 2.5 2.5 0 0 1-4.5 0A2.5 2.5 0 0 1 3 10.5z" /><path d="M9.5 20v-5h5v5" /></symbol>
+        <symbol id="i-pie" viewBox="0 0 24 24"><path d="M12 3.5V12h8.5" /><circle cx="12" cy="12" r="8.5" /></symbol>
+        <symbol id="i-route" viewBox="0 0 24 24"><circle cx="6" cy="5.5" r="2" /><circle cx="18" cy="18.5" r="2" /><path d="M8 5.5h7.5a3.25 3.25 0 0 1 0 6.5h-7a3.25 3.25 0 0 0 0 6.5H16" /></symbol>
+        <symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9 18h6M10 21h4" /><path d="M12 3a6 6 0 0 0-3.5 10.9V16h7v-2.1A6 6 0 0 0 12 3z" /></symbol>
+        <symbol id="i-send" viewBox="0 0 24 24"><path d="M4 12L20 4l-6 16-2.6-6.4z" /><path d="M11.4 13.6L20 4" /></symbol>
+        <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 4l9 16H3z" /><path d="M12 10v4M12 17v.5" /></symbol>
+        <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" /><path d="M12 11v5M12 8v.5" /></symbol>
+        <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" /></symbol>
+        <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M5 19c0-8 5-13 14-14 0 9-5 14-13 14z" /><path d="M5 19l7-7" /></symbol>
+        <symbol id="i-utensils" viewBox="0 0 24 24"><path d="M7 3v8M5 3v5a2 2 0 0 0 4 0V3M7 11v10M17 21V3c-2.2 1.2-3 3.5-3 6v4h3" /></symbol>
+        <symbol id="i-music" viewBox="0 0 24 24"><path d="M9 18V5l11-2v13" /><circle cx="6.5" cy="18" r="2.5" /><circle cx="17.5" cy="16" r="2.5" /></symbol>
+        <symbol id="i-palette" viewBox="0 0 24 24"><path d="M12 3.5a8.5 8.5 0 1 0 0 17c1.2 0 1.8-.8 1.8-1.7 0-1.3-1-1.6-1-2.8 0-1 .8-1.8 1.9-1.8H17a3.5 3.5 0 0 0 3.5-3.5c0-4-3.8-7.2-8.5-7.2z" /><circle cx="7.5" cy="11" r="1" /><circle cx="10.5" cy="7.5" r="1" /><circle cx="15" cy="8" r="1" /></symbol>
+        <symbol id="i-coins" viewBox="0 0 24 24"><ellipse cx="9" cy="7" rx="5.5" ry="2.5" /><path d="M3.5 7v4c0 1.4 2.5 2.5 5.5 2.5s5.5-1.1 5.5-2.5V7" /><path d="M9.5 16.3c.9.1 1.7.2 2.5.2 3 0 5.5-1.1 5.5-2.5v-4M3.5 11v4c0 1.4 2.5 2.5 5.5 2.5" /></symbol>
+        <symbol id="i-accessible" viewBox="0 0 24 24"><circle cx="12" cy="4.5" r="1.8" /><path d="M5 8.5l7 1.5 7-1.5M12 10v4.5l-3.5 6M12 14.5l3.5 6" /></symbol>
+      </defs>
+    </svg>
+
     <a href="#content" class="skip-link visually-hidden">Skip to main content</a>
 
-    <header class="site-header">
-      <div class="container header-inner">
-        <p class="brand"><span class="brand-mark" aria-hidden="true">✦</span> Utsav</p>
-        <p class="tagline">Your AI planner for weddings, birthdays &amp; community celebrations</p>
-        <p id="ai-status" class="badge badge-muted">Checking AI…</p>
+    <header class="topbar">
+      <div class="container topbar-inner">
+        <a class="brand" href="/" aria-label="Utsav home">
+          <span class="brand-mark" aria-hidden="true"><svg class="icon"><use href="#i-sparkle" /></svg></span>
+          <span class="brand-name">Utsav</span>
+        </a>
+        <nav aria-label="Primary" class="topnav">
+          <a href="#planner">Plan</a>
+          <a href="#results" id="nav-results" hidden>Your plan</a>
+        </nav>
+        <p id="ai-status" class="status-pill"><span class="dot" aria-hidden="true"></span><span class="status-text">Checking AI…</span></p>
       </div>
     </header>
 
-    <main id="content" tabindex="-1" class="container">
-      <section id="planner" aria-labelledby="planner-title" class="card">
-        <h1 id="planner-title">Plan your celebration</h1>
-        <p class="lead">Tell us about your event. Utsav builds a budget split, a dated timeline and a vendor checklist, then Gemini adds personalised ideas.</p>
-
-        <form id="event-form" method="post" action="/api/plan" novalidate>
-          <fieldset>
-            <legend>1. The occasion</legend>
-            <div class="radio-grid">
-              <label class="radio-card"><input type="radio" name="eventType" value="wedding" required checked /> <span>💍 Wedding</span></label>
-              <label class="radio-card"><input type="radio" name="eventType" value="birthday" /> <span>🎂 Birthday</span></label>
-              <label class="radio-card"><input type="radio" name="eventType" value="anniversary" /> <span>💞 Anniversary</span></label>
-              <label class="radio-card"><input type="radio" name="eventType" value="baby_shower" /> <span>🍼 Baby shower</span></label>
-              <label class="radio-card"><input type="radio" name="eventType" value="community" /> <span>🎪 Community event</span></label>
+    <main id="content" tabindex="-1">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="container hero-inner">
+          <div class="hero-copy">
+            <p class="eyebrow"><svg class="icon" aria-hidden="true"><use href="#i-sparkle" /></svg> AI celebration planner · powered by Google Gemini</p>
+            <h1 id="hero-title">Every celebration, <em>beautifully</em> planned.</h1>
+            <p class="hero-lead">From mehendi to milestone birthdays and neighbourhood melas — Utsav turns your date, guest list and budget into a complete plan in seconds, then adds ideas that feel like yours.</p>
+            <div class="hero-actions">
+              <a class="btn btn-gold" href="#planner">Start planning <svg class="icon" aria-hidden="true"><use href="#i-arrow" /></svg></a>
+              <button type="button" id="sample-btn" class="btn btn-glass">Try a sample wedding</button>
             </div>
-            <p id="eventType-error" class="error-msg" hidden>Choose an event type.</p>
-
-            <div class="grid-2">
-              <div class="field">
-                <label for="eventName">Event name <span class="optional">(optional)</span></label>
-                <input id="eventName" name="eventName" type="text" maxlength="80" autocomplete="off" />
-              </div>
-              <div class="field">
-                <label for="eventDate">Event date <span class="req" aria-hidden="true">*</span></label>
-                <input id="eventDate" name="eventDate" type="date" required aria-describedby="eventDate-error" />
-                <p id="eventDate-error" class="error-msg">Pick today or a future date.</p>
-              </div>
-              <div class="field">
-                <label for="city">City <span class="optional">(optional)</span></label>
-                <input id="city" name="city" type="text" maxlength="60" autocomplete="address-level2" />
-              </div>
-              <div class="field">
-                <label for="venueType">Venue type</label>
-                <select id="venueType" name="venueType">
-                  <option value="undecided">Not decided yet</option>
-                  <option value="home">Home / own space</option>
-                  <option value="banquet">Banquet hall / hotel</option>
-                  <option value="outdoor">Outdoor / lawn</option>
-                  <option value="restaurant">Restaurant / café</option>
-                  <option value="community">Community hall / ground</option>
-                </select>
-              </div>
-            </div>
-          </fieldset>
-
-          <fieldset>
-            <legend>2. Guests &amp; budget</legend>
-            <div class="grid-3">
-              <div class="field">
-                <label for="guestCount">Number of guests <span class="req" aria-hidden="true">*</span></label>
-                <input id="guestCount" name="guestCount" type="number" inputmode="numeric" min="1" max="5000" step="1" required aria-describedby="guestCount-error" />
-                <p id="guestCount-error" class="error-msg">Enter between 1 and 5000 guests.</p>
-              </div>
-              <div class="field">
-                <label for="budget">Total budget <span class="req" aria-hidden="true">*</span></label>
-                <input id="budget" name="budget" type="number" inputmode="numeric" min="1" step="1" required aria-describedby="budget-error" />
-                <p id="budget-error" class="error-msg">Enter a positive budget.</p>
-              </div>
-              <div class="field">
-                <label for="currency">Currency</label>
-                <select id="currency" name="currency">
-                  <option value="INR">INR ₹</option>
-                  <option value="USD">USD $</option>
-                  <option value="EUR">EUR €</option>
-                  <option value="GBP">GBP £</option>
-                  <option value="AED">AED</option>
-                </select>
-              </div>
-            </div>
-          </fieldset>
-
-          <fieldset>
-            <legend>3. Style &amp; priorities</legend>
-            <div class="field">
-              <label for="theme">Theme or vibe <span class="optional">(optional)</span></label>
-              <input id="theme" name="theme" type="text" maxlength="100" placeholder="e.g. pastel garden, Bollywood retro, eco-friendly" />
-            </div>
-            <fieldset class="nested" aria-describedby="priorities-hint priorities-error">
-              <legend>What matters most? <span class="optional">(up to 3)</span></legend>
-              <p id="priorities-hint" class="hint">Priorities get a bigger share of the budget.</p>
-              <div class="chip-grid">
-                <label class="chip"><input type="checkbox" name="priorities" value="catering" /> Food</label>
-                <label class="chip"><input type="checkbox" name="priorities" value="decor" /> Decor</label>
-                <label class="chip"><input type="checkbox" name="priorities" value="photography" /> Photo &amp; video</label>
-                <label class="chip"><input type="checkbox" name="priorities" value="entertainment" /> Entertainment</label>
-                <label class="chip"><input type="checkbox" name="priorities" value="venue" /> Venue</label>
-                <label class="chip"><input type="checkbox" name="priorities" value="attire" /> Attire</label>
-              </div>
-              <p id="priorities-error" class="error-msg" hidden>Choose at most 3 priorities.</p>
-            </fieldset>
-          </fieldset>
-
-          <fieldset>
-            <legend>4. Guest needs <span class="optional">(optional)</span></legend>
-            <div class="grid-2">
-              <div class="field">
-                <label for="dietary">Dietary needs</label>
-                <input id="dietary" name="dietary" type="text" maxlength="200" placeholder="e.g. Jain, vegan, nut allergy" />
-              </div>
-              <div class="field">
-                <label for="accessibility">Accessibility needs</label>
-                <input id="accessibility" name="accessibility" type="text" maxlength="200" placeholder="e.g. wheelchair access, elderly guests" />
-              </div>
-            </div>
-            <div class="field">
-              <label for="notes">Anything else?</label>
-              <textarea id="notes" name="notes" rows="3" maxlength="500" placeholder="Traditions, must-haves, things to avoid…"></textarea>
-            </div>
-          </fieldset>
-
-          <div class="actions">
-            <button type="submit" id="submit-btn" class="btn btn-primary">Create my plan</button>
-            <button type="button" id="sample-btn" class="btn btn-ghost">Fill a sample wedding</button>
+            <ul class="hero-features">
+              <li><svg class="icon" aria-hidden="true"><use href="#i-pie" /></svg> Smart budget split</li>
+              <li><svg class="icon" aria-hidden="true"><use href="#i-route" /></svg> Dated timeline</li>
+              <li><svg class="icon" aria-hidden="true"><use href="#i-store" /></svg> Vendor checklist</li>
+              <li><svg class="icon" aria-hidden="true"><use href="#i-bulb" /></svg> Personalised ideas</li>
+            </ul>
           </div>
-        </form>
+
+          <div class="hero-art" aria-hidden="true">
+            <svg class="mandala" viewBox="0 0 400 400">
+              <g fill="none" stroke="currentColor">
+                <circle cx="200" cy="200" r="190" stroke-width="0.6" />
+                <circle cx="200" cy="200" r="150" stroke-width="0.6" stroke-dasharray="2 6" />
+                <circle cx="200" cy="200" r="110" stroke-width="0.6" />
+                <circle cx="200" cy="200" r="70" stroke-width="0.6" stroke-dasharray="1 4" />
+                <g stroke-width="0.8">
+                  <path d="M200 10 C230 90 230 110 200 200 C170 110 170 90 200 10Z" />
+                  <path d="M390 200 C310 230 290 230 200 200 C290 170 310 170 390 200Z" />
+                  <path d="M200 390 C170 310 170 290 200 200 C230 290 230 310 200 390Z" />
+                  <path d="M10 200 C90 170 110 170 200 200 C110 230 90 230 10 200Z" />
+                  <path d="M334 66 C290 136 276 150 200 200 C250 124 264 110 334 66Z" />
+                  <path d="M334 334 C264 290 250 276 200 200 C276 250 290 264 334 334Z" />
+                  <path d="M66 334 C110 264 124 250 200 200 C150 276 136 290 66 334Z" />
+                  <path d="M66 66 C136 110 150 124 200 200 C124 150 110 136 66 66Z" />
+                </g>
+              </g>
+            </svg>
+            <div class="float-card fc-1">
+              <span class="fc-label">Budget</span>
+              <strong>₹15,00,000</strong>
+              <span class="fc-meta">Premium · ₹6,000 / guest</span>
+              <span class="fc-bar"><span></span><span></span><span></span><span></span></span>
+            </div>
+            <div class="float-card fc-2">
+              <span class="fc-label">Next milestone</span>
+              <strong>Book the venue</strong>
+              <span class="fc-meta">by Fri, 6 Nov · Urgent</span>
+            </div>
+            <div class="float-card fc-3">
+              <span class="fc-label">Gemini idea</span>
+              <strong>Marigold &amp; Mirror Bazaar</strong>
+              <span class="fc-meta">Theme for the mehendi night</span>
+            </div>
+          </div>
+        </div>
       </section>
 
-      <section id="results" aria-labelledby="results-title" hidden>
-        <div class="card summary" id="summary">
-          <h2 id="results-title" tabindex="-1"></h2>
-          <p id="summary-headline" class="lead"></p>
-          <dl id="summary-stats" class="stats"></dl>
-          <div class="actions no-print">
-            <button type="button" id="ics-btn" class="btn btn-ghost">Add timeline to calendar (.ics)</button>
-            <button type="button" id="print-btn" class="btn btn-ghost">Print / save as PDF</button>
-            <button type="button" id="edit-btn" class="btn btn-ghost">Edit event details</button>
+      <section id="planner" class="section" aria-labelledby="planner-title">
+        <div class="container">
+          <header class="section-head">
+            <p class="eyebrow eyebrow-ink">Step into planning</p>
+            <h2 id="planner-title">Tell us about your celebration</h2>
+            <p class="section-lead">Four quick sections. Only the date, guests and budget are required — everything else makes the plan more personal.</p>
+          </header>
+
+          <div class="planner-grid">
+            <form id="event-form" class="form-card" method="post" action="/api/plan" novalidate>
+              <fieldset class="step">
+                <legend><span class="step-num" aria-hidden="true">1</span> The occasion</legend>
+                <div class="type-grid">
+                  <label class="type-tile"><input type="radio" name="eventType" value="wedding" required checked /><svg class="icon" aria-hidden="true"><use href="#i-rings" /></svg><span>Wedding</span></label>
+                  <label class="type-tile"><input type="radio" name="eventType" value="birthday" /><svg class="icon" aria-hidden="true"><use href="#i-cake" /></svg><span>Birthday</span></label>
+                  <label class="type-tile"><input type="radio" name="eventType" value="anniversary" /><svg class="icon" aria-hidden="true"><use href="#i-heart" /></svg><span>Anniversary</span></label>
+                  <label class="type-tile"><input type="radio" name="eventType" value="baby_shower" /><svg class="icon" aria-hidden="true"><use href="#i-rattle" /></svg><span>Baby shower</span></label>
+                  <label class="type-tile"><input type="radio" name="eventType" value="community" /><svg class="icon" aria-hidden="true"><use href="#i-people" /></svg><span>Community event</span></label>
+                </div>
+
+                <div class="grid-2">
+                  <div class="field">
+                    <label for="eventName">Event name <span class="optional">optional</span></label>
+                    <input id="eventName" name="eventName" type="text" maxlength="80" autocomplete="off" placeholder="e.g. Aarav &amp; Meera’s Wedding" />
+                  </div>
+                  <div class="field">
+                    <label for="eventDate">Event date <span class="req">required</span></label>
+                    <input id="eventDate" name="eventDate" type="date" required aria-describedby="eventDate-error" />
+                    <p id="eventDate-error" class="error-msg">Pick today or a future date.</p>
+                  </div>
+                  <div class="field">
+                    <label for="city">City <span class="optional">optional</span></label>
+                    <input id="city" name="city" type="text" maxlength="60" autocomplete="address-level2" placeholder="e.g. Jaipur" />
+                  </div>
+                  <div class="field">
+                    <label for="venueType">Venue type</label>
+                    <select id="venueType" name="venueType">
+                      <option value="undecided">Not decided yet</option>
+                      <option value="home">Home / own space</option>
+                      <option value="banquet">Banquet hall / hotel</option>
+                      <option value="outdoor">Outdoor / lawn</option>
+                      <option value="restaurant">Restaurant / café</option>
+                      <option value="community">Community hall / ground</option>
+                    </select>
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset class="step">
+                <legend><span class="step-num" aria-hidden="true">2</span> Guests &amp; budget</legend>
+                <div class="grid-3">
+                  <div class="field">
+                    <label for="guestCount">Guests <span class="req">required</span></label>
+                    <input id="guestCount" name="guestCount" type="number" inputmode="numeric" min="1" max="5000" step="1" required aria-describedby="guestCount-error" placeholder="e.g. 150" />
+                    <p id="guestCount-error" class="error-msg">Enter between 1 and 5000 guests.</p>
+                  </div>
+                  <div class="field">
+                    <label for="budget">Total budget <span class="req">required</span></label>
+                    <input id="budget" name="budget" type="number" inputmode="numeric" min="1" step="1" required aria-describedby="budget-error" placeholder="e.g. 500000" />
+                    <p id="budget-error" class="error-msg">Enter a positive budget.</p>
+                  </div>
+                  <div class="field">
+                    <label for="currency">Currency</label>
+                    <select id="currency" name="currency">
+                      <option value="INR">INR ₹</option>
+                      <option value="USD">USD $</option>
+                      <option value="EUR">EUR €</option>
+                      <option value="GBP">GBP £</option>
+                      <option value="AED">AED</option>
+                    </select>
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset class="step">
+                <legend><span class="step-num" aria-hidden="true">3</span> Style &amp; priorities</legend>
+                <div class="field">
+                  <label for="theme">Theme or vibe <span class="optional">optional</span></label>
+                  <input id="theme" name="theme" type="text" maxlength="100" placeholder="e.g. pastel garden, Bollywood retro, eco-friendly" />
+                </div>
+                <fieldset class="nested" aria-describedby="priorities-hint priorities-error">
+                  <legend>What matters most? <span class="optional">up to 3</span></legend>
+                  <p id="priorities-hint" class="hint">Priorities receive a larger share of the budget.</p>
+                  <div class="chip-grid">
+                    <label class="chip"><input type="checkbox" name="priorities" value="catering" /><svg class="icon" aria-hidden="true"><use href="#i-utensils" /></svg> Food</label>
+                    <label class="chip"><input type="checkbox" name="priorities" value="decor" /><svg class="icon" aria-hidden="true"><use href="#i-palette" /></svg> Decor</label>
+                    <label class="chip"><input type="checkbox" name="priorities" value="photography" /><svg class="icon" aria-hidden="true"><use href="#i-sparkle" /></svg> Photo &amp; video</label>
+                    <label class="chip"><input type="checkbox" name="priorities" value="entertainment" /><svg class="icon" aria-hidden="true"><use href="#i-music" /></svg> Entertainment</label>
+                    <label class="chip"><input type="checkbox" name="priorities" value="venue" /><svg class="icon" aria-hidden="true"><use href="#i-store" /></svg> Venue</label>
+                    <label class="chip"><input type="checkbox" name="priorities" value="attire" /><svg class="icon" aria-hidden="true"><use href="#i-heart" /></svg> Attire</label>
+                  </div>
+                  <p id="priorities-error" class="error-msg" hidden>Choose at most 3 priorities.</p>
+                </fieldset>
+              </fieldset>
+
+              <fieldset class="step">
+                <legend><span class="step-num" aria-hidden="true">4</span> Guest needs <span class="optional">optional</span></legend>
+                <div class="grid-2">
+                  <div class="field">
+                    <label for="dietary">Dietary needs</label>
+                    <input id="dietary" name="dietary" type="text" maxlength="200" placeholder="e.g. Jain, vegan, nut allergy" />
+                  </div>
+                  <div class="field">
+                    <label for="accessibility">Accessibility needs</label>
+                    <input id="accessibility" name="accessibility" type="text" maxlength="200" placeholder="e.g. wheelchair access, elderly guests" />
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="notes">Anything else?</label>
+                  <textarea id="notes" name="notes" rows="3" maxlength="500" placeholder="Traditions, must-haves, things to avoid…"></textarea>
+                </div>
+              </fieldset>
+
+              <div class="form-actions">
+                <button type="submit" id="submit-btn" class="btn btn-primary btn-lg"><svg class="icon" aria-hidden="true"><use href="#i-sparkle" /></svg> <span class="btn-label">Create my plan</span></button>
+                <p class="hint">Your details stay in this browser. Only the event context is sent to Gemini.</p>
+              </div>
+            </form>
+
+            <aside class="preview" aria-labelledby="preview-title">
+              <div class="preview-card">
+                <p class="eyebrow eyebrow-gold">Live preview</p>
+                <h3 id="preview-title" class="preview-title">Your celebration</h3>
+                <dl class="preview-list">
+                  <div><dt><svg class="icon" aria-hidden="true"><use href="#i-sparkle" /></svg> Occasion</dt><dd id="pv-type">Wedding</dd></div>
+                  <div><dt><svg class="icon" aria-hidden="true"><use href="#i-calendar" /></svg> Date</dt><dd id="pv-date">Not set</dd></div>
+                  <div><dt><svg class="icon" aria-hidden="true"><use href="#i-people" /></svg> Guests</dt><dd id="pv-guests">—</dd></div>
+                  <div><dt><svg class="icon" aria-hidden="true"><use href="#i-wallet" /></svg> Per guest</dt><dd id="pv-per-guest">—</dd></div>
+                  <div><dt><svg class="icon" aria-hidden="true"><use href="#i-heart" /></svg> Priorities</dt><dd id="pv-priorities">None yet</dd></div>
+                </dl>
+                <p class="preview-foot">You’ll get a budget split, a dated timeline, a vendor checklist and Gemini ideas — plus an assistant for follow-up questions.</p>
+              </div>
+            </aside>
           </div>
         </div>
+      </section>
 
-        <div class="tabs no-print" role="tablist" aria-label="Plan sections">
-          <button type="button" role="tab" id="tab-ideas" aria-controls="panel-ideas" aria-selected="true">Ideas</button>
-          <button type="button" role="tab" id="tab-budget" aria-controls="panel-budget" aria-selected="false" tabindex="-1">Budget</button>
-          <button type="button" role="tab" id="tab-timeline" aria-controls="panel-timeline" aria-selected="false" tabindex="-1">Timeline</button>
-          <button type="button" role="tab" id="tab-vendors" aria-controls="panel-vendors" aria-selected="false" tabindex="-1">Vendors</button>
-          <button type="button" role="tab" id="tab-assistant" aria-controls="panel-assistant" aria-selected="false" tabindex="-1">Ask Utsav</button>
-        </div>
-
-        <div id="panel-ideas" role="tabpanel" aria-labelledby="tab-ideas" class="card panel" tabindex="0"></div>
-        <div id="panel-budget" role="tabpanel" aria-labelledby="tab-budget" class="card panel" tabindex="0" hidden></div>
-        <div id="panel-timeline" role="tabpanel" aria-labelledby="tab-timeline" class="card panel" tabindex="0" hidden></div>
-        <div id="panel-vendors" role="tabpanel" aria-labelledby="tab-vendors" class="card panel" tabindex="0" hidden></div>
-        <div id="panel-assistant" role="tabpanel" aria-labelledby="tab-assistant" class="card panel" tabindex="0" hidden>
-          <h3>Ask Utsav</h3>
-          <p class="hint">Ask follow-up questions about your plan — the assistant knows your budget, dates and vendors.</p>
-          <div class="chip-grid" id="suggestions">
-            <button type="button" class="chip chip-btn">How can I cut costs by 20%?</button>
-            <button type="button" class="chip chip-btn">Which vendors should I book first?</button>
-            <button type="button" class="chip chip-btn">Suggest a running order for the day</button>
-            <button type="button" class="chip chip-btn">Ideas to keep elderly guests comfortable</button>
+      <section id="results" class="section results" aria-labelledby="results-title" hidden>
+        <div class="container">
+          <div class="results-hero" id="summary">
+            <p class="eyebrow eyebrow-gold" id="results-eyebrow">Your plan</p>
+            <h2 id="results-title" tabindex="-1"></h2>
+            <p id="summary-headline" class="results-lead"></p>
+            <dl id="summary-stats" class="kpis"></dl>
+            <div class="results-actions no-print">
+              <button type="button" id="ics-btn" class="btn btn-glass btn-sm"><svg class="icon" aria-hidden="true"><use href="#i-download" /></svg> Add to calendar</button>
+              <button type="button" id="print-btn" class="btn btn-glass btn-sm"><svg class="icon" aria-hidden="true"><use href="#i-print" /></svg> Print / PDF</button>
+              <button type="button" id="edit-btn" class="btn btn-glass btn-sm"><svg class="icon" aria-hidden="true"><use href="#i-edit" /></svg> Edit details</button>
+            </div>
           </div>
-          <ol id="chat-log" class="chat-log" role="log" aria-live="polite" aria-label="Conversation with Utsav"></ol>
-          <form id="chat-form" class="chat-form">
-            <label for="chat-input" class="visually-hidden">Your question</label>
-            <textarea id="chat-input" name="message" rows="2" maxlength="500" required placeholder="Ask anything about your event…"></textarea>
-            <button type="submit" class="btn btn-primary" id="chat-send">Send</button>
-          </form>
+
+          <div class="tabs no-print" role="tablist" aria-label="Plan sections">
+            <button type="button" role="tab" id="tab-ideas" aria-controls="panel-ideas" aria-selected="true"><svg class="icon" aria-hidden="true"><use href="#i-bulb" /></svg> Ideas</button>
+            <button type="button" role="tab" id="tab-budget" aria-controls="panel-budget" aria-selected="false" tabindex="-1"><svg class="icon" aria-hidden="true"><use href="#i-pie" /></svg> Budget</button>
+            <button type="button" role="tab" id="tab-timeline" aria-controls="panel-timeline" aria-selected="false" tabindex="-1"><svg class="icon" aria-hidden="true"><use href="#i-route" /></svg> Timeline</button>
+            <button type="button" role="tab" id="tab-vendors" aria-controls="panel-vendors" aria-selected="false" tabindex="-1"><svg class="icon" aria-hidden="true"><use href="#i-store" /></svg> Vendors</button>
+            <button type="button" role="tab" id="tab-assistant" aria-controls="panel-assistant" aria-selected="false" tabindex="-1"><svg class="icon" aria-hidden="true"><use href="#i-chat" /></svg> Ask Utsav</button>
+          </div>
+
+          <div id="panel-ideas" role="tabpanel" aria-labelledby="tab-ideas" class="panel" tabindex="0"></div>
+          <div id="panel-budget" role="tabpanel" aria-labelledby="tab-budget" class="panel" tabindex="0" hidden></div>
+          <div id="panel-timeline" role="tabpanel" aria-labelledby="tab-timeline" class="panel" tabindex="0" hidden></div>
+          <div id="panel-vendors" role="tabpanel" aria-labelledby="tab-vendors" class="panel" tabindex="0" hidden></div>
+          <div id="panel-assistant" role="tabpanel" aria-labelledby="tab-assistant" class="panel" tabindex="0" hidden>
+            <div class="panel-head">
+              <h3>Ask Utsav</h3>
+              <p class="hint">Follow-up questions about your plan — the assistant knows your budget, dates and vendors.</p>
+            </div>
+            <div class="chat-shell">
+              <ol id="chat-log" class="chat-log" role="log" aria-live="polite" aria-label="Conversation with Utsav"></ol>
+              <p id="chat-typing" class="typing" hidden><span class="avatar" aria-hidden="true"><svg class="icon"><use href="#i-sparkle" /></svg></span> Utsav is thinking<span class="dots" aria-hidden="true"><span></span><span></span><span></span></span></p>
+              <div class="suggestions" id="suggestions">
+                <button type="button" class="suggestion">How can I cut costs by 20%?</button>
+                <button type="button" class="suggestion">Which vendors should I book first?</button>
+                <button type="button" class="suggestion">Suggest a running order for the day</button>
+                <button type="button" class="suggestion">Ideas to keep elderly guests comfortable</button>
+              </div>
+              <form id="chat-form" class="chat-form">
+                <label for="chat-input" class="visually-hidden">Your question</label>
+                <textarea id="chat-input" name="message" rows="1" maxlength="500" required placeholder="Ask anything about your event…"></textarea>
+                <button type="submit" class="btn btn-primary btn-icon" id="chat-send" aria-label="Send question"><svg class="icon" aria-hidden="true"><use href="#i-send" /></svg></button>
+              </form>
+            </div>
+          </div>
         </div>
       </section>
 
       <p id="announcer" class="visually-hidden" aria-live="polite"></p>
-      <div id="error-banner" class="banner banner-error" role="alert" hidden></div>
+      <div class="container"><div id="error-banner" class="banner banner-error" role="alert" hidden></div></div>
     </main>
 
     <footer class="site-footer">
-      <div class="container">
+      <div class="container footer-inner">
+        <p class="brand brand-sm"><span class="brand-mark" aria-hidden="true"><svg class="icon"><use href="#i-sparkle" /></svg></span> Utsav</p>
         <p>Built for PromptWars Virtual — Celebration &amp; Event Planner. Powered by Google Gemini. Your plan is saved only in this browser.</p>
       </div>
     </footer>

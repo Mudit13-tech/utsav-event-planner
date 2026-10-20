@@ -12,7 +12,11 @@ export function initTabs(tablist) {
       other.tabIndex = selected ? 0 : -1;
       document.getElementById(other.getAttribute('aria-controls')).hidden = !selected;
     }
-    if (focus) tab.focus();
+    if (focus) {
+      tab.focus();
+      // Keep the active tab visible in the horizontally scrolling tab bar on small screens.
+      tablist.scrollTo({ left: tab.offsetLeft - (tablist.clientWidth - tab.clientWidth) / 2 });
+    }
   };
 
   tablist.addEventListener('click', (event) => {

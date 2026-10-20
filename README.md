@@ -82,15 +82,17 @@ Express 5 (helmet CSP, rate limit, 16 KB JSON limit, compression)
 - Helmet with a strict Content-Security-Policy (`script-src 'self'`, no inline scripts/styles, `frame-ancestors 'none'`), `nosniff`, referrer policy; `x-powered-by` disabled.
 - Rate limiting on `/api`, 16 KB body limit, request timeouts, errors never leak stack traces, container runs as non-root.
 
-**Efficiency** — the plan (budget, timeline, vendors) is computed instantly without any AI call and shown immediately, while Gemini ideas load in a second request; identical Gemini requests are served from an LRU + TTL cache; `gemini-3.5-flash-lite` (fast, low-cost; ~4 s for a full idea set in testing) with a low thinking level and bounded output tokens; request timeouts with fallback; gzip compression; static assets cached; zero frontend dependencies (≈48 KB of unminified JS/CSS); production-only Docker image. The model is configurable via `GEMINI_MODEL` (e.g. `gemini-3.8-flash`).
+**Efficiency** — the plan (budget, timeline, vendors) is computed instantly without any AI call and shown immediately, while Gemini ideas load in a second request; identical Gemini requests are served from an LRU + TTL cache; `gemini-3.5-flash-lite` (fast, low-cost; ~4 s for a full idea set in testing) with a low thinking level and bounded output tokens; request timeouts with fallback; gzip compression; static assets cached; zero frontend dependencies, no web fonts and no images beyond one inline SVG sprite (≈99 KB unminified, ≈25 KB gzipped for the whole UI); production-only Docker image. The model is configurable via `GEMINI_MODEL` (e.g. `gemini-3.8-flash`).
 
-**Testing** — 76 tests with Node's built-in test runner (no extra test framework): validation, budget maths for every event type, timeline compression, vendor ordering, insights, Gemini integration with a fake client (schema, caching, fallback, history), API end-to-end (status codes, security headers, compression, rate limiting) and frontend utilities (.ics, formatting). ~99% line coverage.
+**Testing** — 79 tests with Node's built-in test runner (no extra test framework): validation, budget maths for every event type, timeline compression, vendor ordering, insights, Gemini integration with a fake client (schema, caching, fallback, history), API end-to-end (status codes, security headers, compression, rate limiting) and frontend utilities (.ics, formatting). ~99% line coverage.
 
 ```bash
 npm test               # run all tests
 npm run test:coverage  # with coverage report
 npm run lint
 ```
+
+**Design** — a premium plum-and-gold theme with serif display type: a hero section, a live event preview that updates as you type, a dashboard-style results area with KPI tiles, a part-to-whole budget chart (validated colour-blind-safe palette, legend, hover/focus tooltips and a table alternative), a phase-grouped visual timeline, vendor cards and a chat with a typing indicator. Light and dark themes, all motion respects `prefers-reduced-motion`.
 
 **Accessibility** — semantic landmarks, skip link, a single `h1` and ordered headings; native form controls with visible labels, fieldsets/legends and `autocomplete`; errors shown after interaction via `:user-invalid` and synced to `aria-invalid`; WAI-ARIA tabs with arrow-key/Home/End support; polite live region announcements; `<progress>` for checklists; urgency conveyed by text, not just colour; visible focus rings; 44–48 px touch targets; light/dark themes via `color-scheme`; `prefers-reduced-motion` and forced-colours support; print stylesheet for a PDF-ready plan.
 

@@ -1,6 +1,16 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { budgetStatus, buildIcs, formToPayload, formatDate, formatMoney, icsEscape, progressPercent } from '../public/js/utils.js';
+import {
+  budgetStatus,
+  buildIcs,
+  chartSegments,
+  formToPayload,
+  formatDate,
+  formatMoney,
+  groupByPhase,
+  icsEscape,
+  progressPercent,
+} from '../public/js/utils.js';
 import { createPlan } from '../src/services/planner.js';
 import { FIXED_NOW, validInput } from './helpers.js';
 
@@ -54,5 +64,26 @@ describe('frontend utils', () => {
     assert.ok(ics.endsWith('END:VCALENDAR\r\n'));
     assert.match(ics, /DTSTART;VALUE=DATE:20270720\r\nDTEND;VALUE=DATE:20270721/);
     assert.match(ics, /DTSTAMP:20261020T100000Z/);
+  });
+
+  it('folds budget lines into top segments plus Other with fixed slots', () => {
+    const plan = createPlan(validInput(), FIXED_NOW);
+    const segments = chartSegments(plan.budget.lines, 5);
+    assert.equal(segments.length, 6);
+    assert.deepEqual(segments.map((s) => s.slot), ['s-1', 's-2', 's-3', 's-4', 's-5', 's-other']);
+    assert.equal(segments.reduce((sum, s) => sum + s.amount, 0), plan.budget.total);
+    assert.equal(segments.flatMap((s) => s.categories).length, plan.budget.lines.length);
+    assert.match(segments.at(-1).label, /^Other \(\d+\)$/);
+  });
+
+  it('does not add an Other segment when there are few lines', () => {
+    const lines = [{ category: 'a', label: 'A', amount: 30 }, { category: 'b', label: 'B', amount: 70 }];
+    const segments = chartSegments(lines, 5);
+    assert.deepEqual(segments.map((s) => [s.label, s.share]), [['B', 70], ['A', 30]]);
+  });
+
+  it('groups consecutive timeline items by phase', () => {
+    const groups = groupByPhase([{ phase: 'A' }, { phase: 'A' }, { phase: 'B' }, { phase: 'A' }]);
+    assert.deepEqual(groups.map((g) => [g.phase, g.items.length]), [['A', 2], ['B', 1], ['A', 1]]);
   });
 });
